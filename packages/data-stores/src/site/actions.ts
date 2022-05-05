@@ -6,6 +6,8 @@ import {
 	LatestAtomicTransferError,
 	AtomicSoftwareStatusError,
 	AtomicSoftwareInstallError,
+	HappyChatAvailability,
+	EmailSupportAvailability,
 } from './types';
 import type { WpcomClientCredentials } from '../shared-types';
 import type {
@@ -43,6 +45,16 @@ export function createActions( clientCreds: WpcomClientCredentials ) {
 	const receiveNewSiteFailed = ( error: NewSiteErrorResponse ) => ( {
 		type: 'RECEIVE_NEW_SITE_FAILED' as const,
 		error,
+	} );
+
+	const receiveHappyChatAvailability = ( availability: HappyChatAvailability ) => ( {
+		type: 'RECEIVE_HAPPY_CHAT_AVAILABILITY' as const,
+		availability,
+	} );
+
+	const receiveEmailSupportAvailability = ( availability: EmailSupportAvailability ) => ( {
+		type: 'RECEIVE_EMAIL_SUPPORT_AVAILABILITY' as const,
+		availability,
 	} );
 
 	function* createSite( params: CreateSiteParams ) {
@@ -231,19 +243,28 @@ export function createActions( clientCreds: WpcomClientCredentials ) {
 	}
 
 	function* setDesignOnSite( siteSlug: string, selectedDesign: Design ) {
+		const { theme, recipe } = selectedDesign;
+
 		yield wpcomRequest( {
 			path: `/sites/${ siteSlug }/themes/mine`,
 			apiVersion: '1.1',
-			body: { theme: selectedDesign.theme, dont_change_homepage: true },
+			body: { theme: recipe?.stylesheet?.split( '/' )[ 1 ] || theme, dont_change_homepage: true },
 			method: 'POST',
 		} );
 
-		yield wpcomRequest( {
-			path: `/sites/${ encodeURIComponent( siteSlug ) }/theme-setup`,
-			apiNamespace: 'wpcom/v2',
-			body: { trim_content: true },
-			method: 'POST',
-		} );
+		/*
+		 * Anchor themes are set up directly via Headstart on the server side
+		 * so exclude them from theme setup.
+		 */
+		const anchorDesigns = [ 'hannah', 'gilbert', 'riley' ];
+		if ( anchorDesigns.indexOf( selectedDesign.template ) < 0 ) {
+			yield wpcomRequest( {
+				path: `/sites/${ encodeURIComponent( siteSlug ) }/theme-setup`,
+				apiNamespace: 'wpcom/v2',
+				body: { trim_content: true, pattern_ids: recipe?.patternIds },
+				method: 'POST',
+			} );
+		}
 
 		const data: { is_fse_active: boolean } = yield wpcomRequest( {
 			path: `/sites/${ siteSlug }/block-editor`,
@@ -254,9 +275,8 @@ export function createActions( clientCreds: WpcomClientCredentials ) {
 		return data?.is_fse_active ?? false;
 	}
 
-	const setSiteSetupError = ( siteId: number, error: string, message: string ) => ( {
+	const setSiteSetupError = ( error: string, message: string ) => ( {
 		type: 'SET_SITE_SETUP_ERROR',
-		siteId,
 		error,
 		message,
 	} );
@@ -424,12 +444,8 @@ export function createActions( clientCreds: WpcomClientCredentials ) {
 				body: {},
 			} );
 			yield atomicSoftwareInstallSuccess( siteId, softwareSet );
-		} catch ( _ ) {
-			yield atomicSoftwareInstallFailure(
-				siteId,
-				softwareSet,
-				AtomicSoftwareInstallError.INTERNAL
-			);
+		} catch ( err ) {
+			yield atomicSoftwareInstallFailure( siteId, softwareSet, err as AtomicSoftwareInstallError );
 		}
 	}
 
@@ -450,6 +466,8 @@ export function createActions( clientCreds: WpcomClientCredentials ) {
 		receiveSite,
 		receiveSiteFailed,
 		receiveSiteTagline,
+		receiveEmailSupportAvailability,
+		receiveHappyChatAvailability,
 		receiveSiteVerticalId,
 		saveSiteTagline,
 		reset,
@@ -493,6 +511,8 @@ export type Action =
 			| ActionCreators[ 'receiveNewSiteFailed' ]
 			| ActionCreators[ 'receiveSiteTagline' ]
 			| ActionCreators[ 'receiveSiteVerticalId' ]
+			| ActionCreators[ 'receiveEmailSupportAvailability' ]
+			| ActionCreators[ 'receiveHappyChatAvailability' ]
 			| ActionCreators[ 'receiveSite' ]
 			| ActionCreators[ 'receiveSiteFailed' ]
 			| ActionCreators[ 'reset' ]

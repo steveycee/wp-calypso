@@ -61,8 +61,8 @@ export const getSiteSettings = ( state: State, siteId: number ) => {
 	return state.sitesSettings[ siteId ];
 };
 
-export const getSiteSetupError = ( state: State, siteId: number ) => {
-	return state.siteSetupErrors[ siteId ] || null;
+export const getSiteSetupError = ( state: State ) => {
+	return state.siteSetupErrors;
 };
 
 export const getPrimarySiteDomain = ( _: State, siteId: number ) =>
@@ -89,6 +89,14 @@ export const getAtomicSoftwareStatus = ( state: State, siteId: number, softwareS
 
 export const getAtomicSoftwareError = ( state: State, siteId: number, softwareSet: string ) => {
 	return state.atomicSoftwareStatus[ siteId ]?.[ softwareSet ]?.error;
+};
+
+export const getAtomicSoftwareInstallError = (
+	state: State,
+	siteId: number,
+	softwareSet: string
+) => {
+	return state.atomicSoftwareInstallStatus[ siteId ]?.[ softwareSet ]?.error;
 };
 
 export const hasActiveSiteFeature = (
@@ -139,4 +147,12 @@ export function isEligibleForProPlan( state: State, siteId?: number ): boolean {
 	}
 
 	return true;
+}
+
+export function getHappyChatAvailability( state: State ) {
+	return state.happyChatAvailability;
+}
+
+export function getEmailSupportAvailability( state: State ) {
+	return state.emailSupportAvailability;
 }

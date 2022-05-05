@@ -9,6 +9,8 @@ import {
 	SiteSettings,
 	AtomicTransferStatus,
 	LatestAtomicTransferStatus,
+	HappyChatAvailability,
+	EmailSupportAvailability,
 } from './types';
 import {
 	AtomicTransferState,
@@ -77,6 +79,28 @@ export const isFetchingSiteDetails: Reducer< boolean | undefined, Action > = (
 		case 'RECEIVE_SITE':
 		case 'RECEIVE_SITE_FAILED':
 			return false;
+	}
+	return state;
+};
+
+export const happyChatAvailability: Reducer< HappyChatAvailability | undefined, Action > = (
+	state,
+	action
+) => {
+	switch ( action.type ) {
+		case 'RECEIVE_HAPPY_CHAT_AVAILABILITY':
+			return action.availability;
+	}
+	return state;
+};
+
+export const emailSupportAvailability: Reducer< EmailSupportAvailability | undefined, Action > = (
+	state,
+	action
+) => {
+	switch ( action.type ) {
+		case 'RECEIVE_EMAIL_SUPPORT_AVAILABILITY':
+			return action.availability;
 	}
 	return state;
 };
@@ -172,32 +196,27 @@ export const launchStatus: Reducer< { [ key: number ]: SiteLaunchState }, Action
 };
 
 export const siteSetupErrors: Reducer<
-	{ [ key: number ]: any | undefined },
+	{
+		error?: string;
+		message?: string;
+	},
 	{
 		type: string;
-		siteId: number;
 		error?: string;
 		message?: string;
 	}
 > = ( state = {}, action ) => {
 	if ( action.type === 'SET_SITE_SETUP_ERROR' ) {
-		const { siteId, error, message } = action;
+		const { error, message } = action;
 
 		return {
-			...state,
-			[ siteId ]: {
-				error,
-				message,
-			},
+			error,
+			message,
 		};
 	}
 
 	if ( action.type === 'CLEAR_SITE_SETUP_ERROR' ) {
-		const newState = {
-			...state,
-		};
-
-		delete newState[ action.siteId ];
+		return {};
 	}
 
 	return state;
@@ -349,7 +368,7 @@ export const atomicSoftwareInstallStatus: Reducer<
 			[ action.siteId ]: {
 				[ action.softwareSet ]: {
 					status: AtomicSoftwareInstallStatus.FAILURE,
-					error: undefined,
+					error: action.error,
 				},
 			},
 		};
@@ -371,6 +390,8 @@ const reducer = combineReducers( {
 	sitesDomains,
 	sitesSettings,
 	siteSetupErrors,
+	happyChatAvailability,
+	emailSupportAvailability,
 	atomicTransferStatus,
 	latestAtomicTransferStatus,
 	atomicSoftwareStatus,
