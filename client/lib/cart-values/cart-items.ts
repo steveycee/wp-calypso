@@ -32,7 +32,6 @@ import {
 	isSiteRedirect,
 	isSpaceUpgrade,
 	isTitanMail,
-	isTrafficGuide,
 	isUnlimitedSpace,
 	isUnlimitedThemes,
 	isVideoPress,
@@ -192,10 +191,6 @@ export function hasOnlyRenewalItems( cart: ResponseCart ): boolean {
 
 export function hasConciergeSession( cart: ResponseCart ): boolean {
 	return getAllCartItems( cart ).some( isConciergeSession );
-}
-
-export function hasTrafficGuide( cart: ResponseCart ): boolean {
-	return getAllCartItems( cart ).some( isTrafficGuide );
 }
 
 /**

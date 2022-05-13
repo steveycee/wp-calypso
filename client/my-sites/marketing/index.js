@@ -12,7 +12,6 @@ import {
 	redirectSharingButtons,
 	sharingButtons,
 	traffic,
-	ultimateTrafficGuide,
 } from './controller';
 
 export default function () {
@@ -91,14 +90,7 @@ export default function () {
 		clientRender
 	);
 
-	page(
-		'/marketing/ultimate-traffic-guide/:domain',
-		siteSelection,
-		sites,
-		navigation,
-		ultimateTrafficGuide,
-		layout,
-		makeLayout,
-		clientRender
-	);
+	page( '/marketing/ultimate-traffic-guide/:domain', () => {
+		window.location.href = 'https://wpcourses.com/course/intro-to-search-engine-optimization-seo/';
+	} );
 }
