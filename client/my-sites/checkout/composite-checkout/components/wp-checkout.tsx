@@ -298,6 +298,8 @@ export default function WPCheckout( {
 
 	const { transactionStatus } = useTransactionStatus();
 
+	throw new Error( 'this is a test error for this branch' );
+
 	if ( transactionStatus === TransactionStatus.COMPLETE ) {
 		debug( 'rendering post-checkout redirecting page' );
 		return (
