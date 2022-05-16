@@ -4926,6 +4926,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sentry/types@npm:^6.19.7":
+  version: 6.19.7
+  resolution: "@sentry/types@npm:6.19.7"
+  checksum: b428ee58ca5f1587a5bdcf5ae19de0116f5c73eba056872b3a54ff2221d0f5166f3ef28867a8563f00d3da08e55ed3e24baad207b4d1d918596867f99c0ec705
+  languageName: node
+  linkType: hard
+
 "@sentry/utils@npm:6.19.6":
   version: 6.19.6
   resolution: "@sentry/utils@npm:6.19.6"
@@ -12528,6 +12535,7 @@ __metadata:
     "@emotion/styled": ^11.3.0
     "@github/webauthn-json": ^0.4.1
     "@sentry/react": ^6.19.4
+    "@sentry/types": ^6.19.7
     "@sentry/webpack-plugin": ^1.18.8
     "@stripe/react-stripe-js": ^1.4.1
     "@stripe/stripe-js": ^1.17.1
