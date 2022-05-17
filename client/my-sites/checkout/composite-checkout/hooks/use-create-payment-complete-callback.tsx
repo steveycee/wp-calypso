@@ -1,3 +1,4 @@
+import { localizeUrl } from '@automattic/i18n-utils';
 import { useShoppingCart } from '@automattic/shopping-cart';
 import { resolveDeviceTypeByViewPort } from '@automattic/viewport';
 import debugFactory from 'debug';
@@ -154,7 +155,7 @@ export default function useCreatePaymentCompleteCallback( {
 				console.error( err );
 				reduxDispatch(
 					recordCompositeCheckoutErrorDuringAnalytics( {
-						errorObject: err,
+						errorObject: err as Error,
 						failureDescription: 'useCreatePaymentCompleteCallback',
 					} )
 				);
@@ -320,7 +321,9 @@ function displayRenewalSuccessNotice(
 							email: product.user_email,
 						},
 						components: {
-							a: <a href={ AUTO_RENEWAL } target="_blank" rel="noopener noreferrer" />,
+							a: (
+								<a href={ localizeUrl( AUTO_RENEWAL ) } target="_blank" rel="noopener noreferrer" />
+							),
 						},
 					}
 				),
