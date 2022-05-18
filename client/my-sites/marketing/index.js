@@ -19,13 +19,18 @@ export default function () {
 		window.location.replace( 'https://wordpress.com/do-it-for-me' );
 	} );
 
+	page( '/marketing/ultimate-traffic-guide*', () => {
+		window.location.replace(
+			'https://wpcourses.com/course/intro-to-search-engine-optimization-seo/'
+		);
+	} );
+
 	const paths = [
 		'/marketing',
 		'/marketing/connections',
 		'/marketing/sharing-buttons',
 		'/marketing/tools',
 		'/marketing/traffic',
-		'/marketing/ultimate-traffic-guide',
 		'/sharing',
 		'/sharing/buttons',
 		'/marketing/business-tools',
@@ -89,8 +94,4 @@ export default function () {
 		makeLayout,
 		clientRender
 	);
-
-	page( '/marketing/ultimate-traffic-guide/:domain', () => {
-		window.location.href = 'https://wpcourses.com/course/intro-to-search-engine-optimization-seo/';
-	} );
 }
