@@ -107,7 +107,6 @@ describe( 'Existing credit card payment methods', () => {
 		fireEvent.click( await screen.findByText( activePayButtonText ) );
 		await waitFor( () => {
 			expect( existingCardProcessor ).toHaveBeenCalledWith( {
-				items: [],
 				name: cardholderName,
 				storedDetailsId,
 				paymentMethodToken,
@@ -132,7 +131,6 @@ describe( 'Existing credit card payment methods', () => {
 		fireEvent.click( await screen.findByText( activePayButtonText ) );
 		await waitFor( () => {
 			expect( existingCardProcessor ).toHaveBeenCalledWith( {
-				items: [],
 				name: cardholderName,
 				storedDetailsId,
 				paymentMethodToken,
