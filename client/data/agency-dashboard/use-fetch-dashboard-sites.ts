@@ -4,16 +4,19 @@ import { useDispatch } from 'react-redux';
 import { wpcomJetpackLicensing as wpcomJpl } from 'calypso/lib/wp';
 import { errorNotice } from 'calypso/state/notices/actions';
 
-const useFetchDashboardSites = () => {
+const useFetchDashboardSites = ( searchQuery: string | null ) => {
 	const translate = useTranslate();
 	const dispatch = useDispatch();
 	return useQuery(
 		[ 'jetpack-cloud', 'agency-dashboard', 'sites' ],
 		() =>
-			wpcomJpl.req.get( {
-				path: '/jetpack-partner/dashboard/sites-mock',
-				apiNamespace: 'wpcom/v2',
-			} ),
+			wpcomJpl.req.get(
+				{
+					path: '/jetpack-partner/dashboard/sites-mock',
+					apiNamespace: 'wpcom/v2',
+				},
+				{ ...( searchQuery && { q: searchQuery } ) }
+			),
 		{
 			refetchOnWindowFocus: false,
 			onError: () =>
