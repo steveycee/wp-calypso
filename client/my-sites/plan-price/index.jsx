@@ -43,18 +43,6 @@ export class PlanPrice extends Component {
 			return true;
 		};
 
-		if ( shouldUseDisplayPrice() ) {
-			return (
-				<h4 className={ classes }>
-					<span
-						className="plan-price__integer"
-						// eslint-disable-next-line react/no-danger
-						dangerouslySetInnerHTML={ { __html: productDisplayPrice } }
-					/>
-				</h4>
-			);
-		}
-
 		if ( ! currencyCode || rawPrice === undefined ) {
 			return null;
 		}
@@ -117,12 +105,9 @@ export class PlanPrice extends Component {
 		const smallerPriceHtml = renderPriceHtml( priceRange[ 0 ] );
 		const higherPriceHtml = priceRange[ 1 ] && renderPriceHtml( priceRange[ 1 ] );
 
-		return (
-			<>
-				{ originalPricePrefix && (
-					<span className="plan-price__original-price-prefix">{ originalPricePrefix }</span>
-				) }
-				<h4 className={ classes }>
+		const renderRawFormat = () => {
+			return (
+				<>
 					<sup className="plan-price__currency-symbol">{ priceRange[ 0 ].price.symbol }</sup>
 					{ ! higherPriceHtml && renderPriceHtml( priceRange[ 0 ] ) }
 					{ higherPriceHtml &&
@@ -130,6 +115,27 @@ export class PlanPrice extends Component {
 							components: { smallerPrice: smallerPriceHtml, higherPrice: higherPriceHtml },
 							comment: 'The price range for a particular product',
 						} ) }
+				</>
+			);
+		};
+
+		const renderDisplayPriceFormat = () => {
+			return (
+				<span
+					className="plan-price__integer"
+					// eslint-disable-next-line react/no-danger
+					dangerouslySetInnerHTML={ { __html: productDisplayPrice } }
+				/>
+			);
+		};
+
+		return (
+			<>
+				{ originalPricePrefix && (
+					<span className="plan-price__original-price-prefix">{ originalPricePrefix }</span>
+				) }
+				<h4 className={ classes }>
+					{ shouldUseDisplayPrice() ? renderDisplayPriceFormat() : renderRawFormat() }
 					{ taxText && (
 						<sup className="plan-price__tax-amount">
 							{ translate( '(+%(taxText)s tax)', { args: { taxText } } ) }
