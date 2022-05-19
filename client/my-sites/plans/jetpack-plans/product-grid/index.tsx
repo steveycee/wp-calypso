@@ -102,6 +102,7 @@ const ProductGrid: React.FC< ProductsGridProps > = ( {
 	createButtonURL,
 	isPricingPageTreatment202204,
 	isPricingPageTest202204AssignmentLoading,
+	isLoadingUpsellPageExperiment,
 } ) => {
 	const translate = useTranslate();
 	const isDesktop = useDesktopBreakpoint();
@@ -202,6 +203,7 @@ const ProductGrid: React.FC< ProductsGridProps > = ( {
 				collapseFeaturesOnMobile
 				isPricingPageTreatment202204={ isPricingPageTreatment202204 }
 				isPricingPageTest202204AssignmentLoading={ isPricingPageTest202204AssignmentLoading }
+				isLoadingUpsellPageExperiment={ isLoadingUpsellPageExperiment }
 			/>
 		</li>
 	);
@@ -258,6 +260,7 @@ const ProductGrid: React.FC< ProductsGridProps > = ( {
 									isPricingPageTest202204AssignmentLoading={
 										isPricingPageTest202204AssignmentLoading
 									}
+									isLoadingUpsellPageExperiment={ isLoadingUpsellPageExperiment }
 								/>
 							</li>
 						);

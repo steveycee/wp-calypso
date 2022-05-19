@@ -53,6 +53,7 @@ export interface ProductsGridProps {
 	createButtonURL?: PurchaseURLCallback;
 	isPricingPageTreatment202204?: boolean;
 	isPricingPageTest202204AssignmentLoading?: boolean;
+	isLoadingUpsellPageExperiment?: boolean;
 }
 
 export type PlanGridProducts = {

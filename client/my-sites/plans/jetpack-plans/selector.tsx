@@ -1,6 +1,6 @@
 import { TERM_ANNUALLY } from '@automattic/calypso-products';
 import classNames from 'classnames';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useMemo } from 'react';
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import QueryIntroOffers from 'calypso/components/data/query-intro-offers';
@@ -57,6 +57,11 @@ const SelectorPage: React.FC< SelectorPageProps > = ( {
 	const viewTrackerPath = getViewTrackerPath( rootUrl, siteSlugProp );
 	const viewTrackerProps = siteId ? { site: siteSlug } : {};
 	const legacyPlan = planRecommendation ? planRecommendation[ 0 ] : null;
+
+	const [ isLoadingUpsellPageExperiment, experimentAssignment ] = useExperiment(
+		'jetpack_upsell_page_2022_05'
+	);
+	const showUpsellPage = experimentAssignment?.variationName === 'treatment';
 
 	useEffect( () => {
 		dispatch(
@@ -123,7 +128,10 @@ const SelectorPage: React.FC< SelectorPageProps > = ( {
 		[]
 	);
 
-	const createProductURL = getPurchaseURLCallback( siteSlug, urlQueryArgs, locale );
+	const createProductURL = useMemo(
+		() => getPurchaseURLCallback( siteSlug, urlQueryArgs, locale, rootUrl, showUpsellPage ),
+		[ siteSlug, urlQueryArgs, locale, rootUrl, showUpsellPage ]
+	);
 
 	// Sends a user to a page based on whether there are subtypes.
 	const selectProduct: PurchaseCallback = (
@@ -183,12 +191,6 @@ const SelectorPage: React.FC< SelectorPageProps > = ( {
 		( variation: Iterations | null ) => `jetpack-plans__iteration--${ variation ?? 'default' }`
 	);
 
-	// Set up pricing display test
-	const [ isLoadingExperimentAssignment, experimentAssignment ] = useExperiment(
-		'calypso_jetpack_pricing_page_focus_on_intro_rate_202204_v1'
-	);
-	const isPricingPageTreatment202204 = experimentAssignment?.variationName === 'treatment';
-
 	return (
 		<>
 			<QueryJetpackSaleCoupon />
@@ -223,8 +225,7 @@ const SelectorPage: React.FC< SelectorPageProps > = ( {
 					onDurationChange={ trackDurationChange }
 					scrollCardIntoView={ scrollCardIntoView }
 					createButtonURL={ createProductURL }
-					isPricingPageTreatment202204={ isPricingPageTreatment202204 }
-					isPricingPageTest202204AssignmentLoading={ isLoadingExperimentAssignment }
+					isLoadingUpsellPageExperiment={ isLoadingUpsellPageExperiment }
 				/>
 
 				<QueryProductsList type="jetpack" />

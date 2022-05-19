@@ -54,6 +54,7 @@ interface ProductCardProps {
 	collapseFeaturesOnMobile?: boolean;
 	isPricingPageTreatment202204?: boolean;
 	isPricingPageTest202204AssignmentLoading?: boolean;
+	isLoadingUpsellPageExperiment?: boolean;
 }
 
 const ProductCard: React.FC< ProductCardProps > = ( {
@@ -71,6 +72,7 @@ const ProductCard: React.FC< ProductCardProps > = ( {
 	collapseFeaturesOnMobile,
 	isPricingPageTreatment202204,
 	isPricingPageTest202204AssignmentLoading,
+	isLoadingUpsellPageExperiment,
 } ) => {
 	const translate = useTranslate();
 	const moment = useLocalizedMoment();
@@ -226,7 +228,7 @@ const ProductCard: React.FC< ProductCardProps > = ( {
 			buttonURL={
 				createButtonURL ? createButtonURL( item, isUpgradeableToYearly, purchase ) : undefined
 			}
-			buttonDisabled={ isDisabled || buttonDisabled }
+			buttonDisabled={ isDisabled || buttonDisabled || isLoadingUpsellPageExperiment }
 			expiryDate={ showExpiryNotice && purchase ? moment( purchase.expiryDate ) : undefined }
 			isFeatured={ isFeatured }
 			isOwned={ isOwned }
