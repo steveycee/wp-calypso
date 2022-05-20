@@ -10,6 +10,7 @@ import {
 	isWpComBusinessPlan,
 	isWpComEcommercePlan,
 	isWpComPremiumPlan,
+	isStarterPlan,
 } from '@automattic/calypso-products';
 import { Gridicon } from '@automattic/components';
 import {
@@ -158,7 +159,10 @@ function CheckoutSummaryFeaturesList( props: {
 	const domains = responseCart.products.filter(
 		( product ) => isDomainProduct( product ) || isDomainTransfer( product )
 	);
-	const hasPlanInCart = responseCart.products.some( ( product ) => isPlan( product ) );
+
+	const plans = responseCart.products.filter( ( product ) => isPlan( product ) );
+	const hasPlanInCart = plans.length > 0;
+
 	const translate = useTranslate();
 	const isJetpackNotAtomic = useSelector( ( state ) =>
 		siteId ? isJetpackSite( state, siteId ) && ! isAtomicSite( state, siteId ) : undefined
@@ -174,6 +178,9 @@ function CheckoutSummaryFeaturesList( props: {
 	}
 	const refundText = getRefundText( refundDays, null, translate );
 
+	const hasOnlyStarterPlan =
+		plans.filter( ( plan ) => isStarterPlan( plan.product_slug ) ).length === plans.length;
+
 	return (
 		<CheckoutSummaryFeaturesListWrapper>
 			{ hasDomainsInCart &&
@@ -186,10 +193,12 @@ function CheckoutSummaryFeaturesList( props: {
 					nextDomainIsFree={ nextDomainIsFree }
 				/>
 			) }
-			<CheckoutSummaryFeaturesListItem>
-				<WPCheckoutCheckIcon id="features-list-support-text" />
-				<SupportText hasPlanInCart={ hasPlanInCart } isJetpackNotAtomic={ isJetpackNotAtomic } />
-			</CheckoutSummaryFeaturesListItem>
+			{ ! hasOnlyStarterPlan && (
+				<CheckoutSummaryFeaturesListItem>
+					<WPCheckoutCheckIcon id="features-list-support-text" />
+					<SupportText plans={ plans } isJetpackNotAtomic={ isJetpackNotAtomic } />
+				</CheckoutSummaryFeaturesListItem>
+			) }
 
 			{ ! hasPlanInCart && <CheckoutSummaryChatIfAvailable siteId={ siteId } /> }
 
@@ -204,15 +213,15 @@ function CheckoutSummaryFeaturesList( props: {
 }
 
 function SupportText( {
-	hasPlanInCart,
+	plans,
 	isJetpackNotAtomic,
 }: {
-	hasPlanInCart?: boolean;
+	plans: Array< ResponseCartProduct >;
 	isJetpackNotAtomic?: boolean | null;
 } ) {
 	const translate = useTranslate();
 
-	if ( hasPlanInCart && ! isJetpackNotAtomic ) {
+	if ( plans.length && ! isJetpackNotAtomic ) {
 		return <span>{ translate( 'Unlimited customer support via email' ) }</span>;
 	}
 

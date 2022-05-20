@@ -1,12 +1,6 @@
 import page from 'page';
 import { makeLayout, render as clientRender } from 'calypso/controller';
-import {
-	navigation,
-	siteSelection,
-	sites,
-	selectSiteIfLoggedIn,
-} from 'calypso/my-sites/controller';
-import { recordTracksEvent } from 'calypso/state/analytics/actions';
+import { navigation, siteSelection, sites } from 'calypso/my-sites/controller';
 import {
 	browsePlugins,
 	browsePluginsOrPlugin,
@@ -14,7 +8,6 @@ import {
 	renderProvisionPlugins,
 	jetpackCanUpdate,
 	plugins,
-	resetHistory,
 	scrollTopIfNoHash,
 	upload,
 } from './controller';
@@ -38,21 +31,6 @@ export default function () {
 		clientRender
 	);
 
-	page( '/plugins/wpcom-masterbar-redirect/:site', ( context ) => {
-		context.store.dispatch( recordTracksEvent( 'calypso_wpcom_masterbar_plugins_view_click' ) );
-		page.redirect( `/plugins/${ context.params.site }` );
-	} );
-
-	page( '/plugins/browse/wpcom-masterbar-redirect/:site', ( context ) => {
-		context.store.dispatch( recordTracksEvent( 'calypso_wpcom_masterbar_plugins_add_click' ) );
-		page.redirect( `/plugins/browse/${ context.params.site }` );
-	} );
-
-	page( '/plugins/manage/wpcom-masterbar-redirect/:site', ( context ) => {
-		context.store.dispatch( recordTracksEvent( 'calypso_wpcom_masterbar_plugins_manage_click' ) );
-		page.redirect( `/plugins/manage/${ context.params.site }` );
-	} );
-
 	page( '/plugins/browse/:category/:site', ( context ) => {
 		const { category, site } = context.params;
 		page.redirect( `/plugins/${ category }/${ site }` );
@@ -65,7 +43,7 @@ export default function () {
 
 	page( '/plugins/upload', scrollTopIfNoHash, siteSelection, sites, makeLayout, clientRender );
 	page(
-		'/plugins/upload/:site',
+		'/plugins/upload/:site_id',
 		scrollTopIfNoHash,
 		siteSelection,
 		navigation,
@@ -74,10 +52,8 @@ export default function () {
 		clientRender
 	);
 
-	page( '/plugins', selectSiteIfLoggedIn, navigation, makeLayout, clientRender );
-
 	page(
-		'/plugins/:site',
+		'/plugins',
 		scrollTopIfNoHash,
 		siteSelection,
 		navigation,
@@ -87,7 +63,7 @@ export default function () {
 	);
 
 	page(
-		'/plugins/manage/:site',
+		'/plugins/manage/:site?',
 		scrollTopIfNoHash,
 		siteSelection,
 		navigation,
@@ -97,7 +73,7 @@ export default function () {
 	);
 
 	page(
-		'/plugins/:pluginFilter(active|inactive|updates)/:site',
+		'/plugins/:pluginFilter(active|inactive|updates)/:site_id?',
 		scrollTopIfNoHash,
 		siteSelection,
 		navigation,
@@ -108,7 +84,7 @@ export default function () {
 	);
 
 	page(
-		'/plugins/:plugin/:site',
+		'/plugins/:plugin/:site_id?',
 		scrollTopIfNoHash,
 		siteSelection,
 		navigation,
@@ -118,7 +94,7 @@ export default function () {
 	);
 
 	page(
-		'/plugins/:plugin/eligibility/:site',
+		'/plugins/:plugin/eligibility/:site_id',
 		scrollTopIfNoHash,
 		siteSelection,
 		navigation,
@@ -126,12 +102,4 @@ export default function () {
 		makeLayout,
 		clientRender
 	);
-
-	page.exit( '/plugins/*', ( context, next ) => {
-		if ( 0 !== page.current.indexOf( '/plugins/' ) ) {
-			resetHistory();
-		}
-
-		next();
-	} );
 }
